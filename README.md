@@ -47,6 +47,11 @@ The Dispatch Monitoring System provides intelligent, real-time monitoring of com
    - Loss function: Sparse categorical cross-entropy
  - Results: accuracy 0.94
 
+## Feedback correction system
+1. User watches tracked video results.
+2. If a classification error is detected (e.g., a dish labeled as kakigori instead of empty), the user can submit a correction via a form.
+3. The system crops the corrected object from the corresponding video frame and saves it in a feedback directory
+4. These cropped samples can be reviewed or used later to retrain the classification model.
 ## Installation and deployment
 You can run the Dispatch Monitoring System either locally using Python or via Docker Compose for easy deployment.
 
@@ -61,7 +66,7 @@ You can run the Dispatch Monitoring System either locally using Python or via Do
 
    ``` python -m venv venv```
 
-   ``` source venv/bin/activate ```
+   ``` venv/Scrips/Activate ```
 
 3. Install dependencies
 
@@ -105,7 +110,7 @@ You can run the Dispatch Monitoring System either locally using Python or via Do
 
 4. Submit corrections if any labels are incorrect
 
-Here is the demo usage:
+Here is the demo usage: [demo](https://drive.google.com/file/d/1QMCIPn13RDs6xZfS0kFPpY4_OqWexxTs/view?usp=sharing)
 
 
 
