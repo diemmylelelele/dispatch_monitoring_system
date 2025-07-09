@@ -1,0 +1,8 @@
+opencv-python-headless
+numpy
+ultralytics
+tensorflow
+deep_sort_realtime
+flask
+werkzeug
+ffmpeg

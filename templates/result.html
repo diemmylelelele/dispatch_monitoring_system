@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tracking Result - Dispatch Monitoring System</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #65CD32;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .video-container {
+      background-color: #ecf0f1;
+      border-radius: 6px;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+    video {
+      width: 100%;
+      border-radius: 4px;
+      display: block;
+    }
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .btn {
+      background-color: #B4E267;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    .btn:hover {
+      background-color: #9cc752;
+    }
+    form {
+      background-color: #fafafa;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+    select, input[type="number"], input[type="submit"] {
+      margin-top: 5px;
+      padding: 8px;
+      width: 100%;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+    }
+    #feedback-msg {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .success {
+      color: green;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>DISPATCH MONITORING SYSTEM</h1>
+
+    <div class="video-container">
+      <video id="output-video" controls playsinline>
+        <source src="{{ output_video }}" type="video/mp4">
+        Your browser does not support HTML5 video.
+      </video>
+    </div>
+
+    <div class="btn-group">
+      <a class="btn" href="{{ output_video }}" download>DOWNLOAD</a>
+    </div>
+
+    <h2 style="text-align:center;">Correct Prediction</h2>
+    <form id="correction-form">
+      <label for="frame_id">Frame Number:</label>
+      <select name="frame_id" id="frame_id" required>
+        {% for i in range(300) %}
+        <option value="{{ i }}">{{ i }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="track_id">Object ID:</label>
+      <input type="number" name="track_id" id="track_id" required min="0">
+
+      <label for="correct_type">Correct Type:</label>
+      <select name="correct_type" id="correct_type" required>
+        <option value="dish">dish</option>
+        <option value="tray">tray</option>
+      </select>
+
+      <label for="correct_label">Correct Label:</label>
+      <select name="correct_label" id="correct_label" required>
+        <option value="empty">empty</option>
+        <option value="kakigori">kakigori</option>
+        <option value="not_empty">not_empty</option>
+      </select>
+
+      <input type="submit" class="btn" value="Submit Correction">
+    </form>
+
+    <div id="feedback-msg"></div>
+  </div>
+
+  <script>
+    const video = document.getElementById('output-video');
+    const frameSelect = document.getElementById('frame_id');
+
+    video.addEventListener('timeupdate', () => {
+      const fps = 30;
+      const currentTime = video.currentTime;
+      const currentFrame = Math.floor(currentTime * fps);
+      if (frameSelect) {
+        frameSelect.value = Math.min(currentFrame, frameSelect.options.length - 1);
+      }
+    });
+
+    // AJAX form submission
+    document.getElementById("correction-form").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const formData = new FormData(this);
+
+      fetch("/submit_correction", {
+        method: "POST",
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        const msgDiv = document.getElementById("feedback-msg");
+        if (data.message) {
+          msgDiv.innerText = data.message;
+          msgDiv.className = "success";
+        } else if (data.error) {
+          msgDiv.innerText = data.error;
+          msgDiv.className = "error";
+        }
+      })
+      .catch(err => {
+        const msgDiv = document.getElementById("feedback-msg");
+        msgDiv.innerText = "Error submitting correction.";
+        msgDiv.className = "error";
+      });
+    });
+  </script>
+</body>
+</html>
