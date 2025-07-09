@@ -25,6 +25,28 @@ The Dispatch Monitoring System provides intelligent, real-time monitoring of com
 | Web Interface     | Flask           |
 | Deployment        | Docker Compose  |
 
+## Detection 
+ - Base Model: ``` yolo11n.pt```
+ - Dataset: custom labeled dish/tray dataset
+ - Training detailes:
+   - Image size: 640x640
+   - Batch size: 16
+   - Epochs: 100
+ - Output: Exported ```best.pt``` used in deployment (```models/detection/best.pt```)
+## Classification model ( MobileNetV2)
+
+ - Based model: pre-trained ```MobileNetV2``` ( ImageNet weights)
+ - Target class: ```empty```, ```kakigori```, ```not_empty```
+ - Image size: 224x224
+ - Preprocessing:
+   - Normalized pixel values to [0,1]
+   - Resized and shuffled
+ - Training configuration:
+   - Batch size: 32
+   - Epoch 10
+   - Loss function: Sparse categorical cross-entropy
+ - Results: accuracy 0.94
+
 ## Installation and deployment
 You can run the Dispatch Monitoring System either locally using Python or via Docker Compose for easy deployment.
 
@@ -72,6 +94,20 @@ You can run the Dispatch Monitoring System either locally using Python or via Do
 3. Stop the app
 
    To stop and remove containers: ``` docker-compose down```
+
+## Usage instructions
+### Web interface operations
+1. Upload an .mp4 video for tracking
+
+2. Wait for processing to complete
+
+3. View the tracked video and
+
+4. Submit corrections if any labels are incorrect
+
+Here is the demo usage:
+
+
 
 
 
