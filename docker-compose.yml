@@ -1,13 +1,16 @@
+# docker-compose.yml
 version: '3.8'
 
 services:
-  dispatch-monitoring:
+  dispatch-monitor:
     build: .
     ports:
       - "5000:5000"
     volumes:
       - ./videos:/app/videos
-      - ./models:/app/models
       - ./feedback:/app/feedback
-      - ./templates:/app/templates
+      - ./models:/app/models
+      - ./dataset:/app/dataset
+    environment:
+      - FLASK_ENV=production
     restart: unless-stopped
